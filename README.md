@@ -1,6 +1,6 @@
 # Princess Battle
 
-Princess Battle é um jogo spin-off do jogo Princess Escape. Esse jogo casual tem o intuito de trazer diversão a diversos jogadores que buscam um jogo cooperativo local. Princess Battle é um Shoot 'em All em visão isométrica. Mais Informações em: https://github.com/pucspcos/projetocos2017-princess-battle/wiki/Sobre-o-Jogo .
+Divirta-se com o fantastico game Princess Battle, onde vc, jogador, precisa proteger a coroa do seu dinossauro dos inimigos invejosos​! Jogo com estética surface web com um toque de vaporwave , que vai garantir uma boa diversão com muitas risadas!. Mais Informações em: https://github.com/pucspcos/projetocos2017-princess-battle/wiki/Sobre-o-Jogo .
 
 # Nome compledo dos integrantes do projeto:
 
