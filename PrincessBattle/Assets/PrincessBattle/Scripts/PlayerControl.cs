@@ -25,26 +25,32 @@ namespace PrincessBattle
 
         override protected void Update()
         {
-            base.Update();
-
             if (m_CanMove)
             {
                 Move();
 
                 Fire();
             }
+
+            base.Update();
         }
 
         void Move()
         {
+            float xInput = Input.GetAxis("Horizontal1");
+            float yInput = Input.GetAxis("Vertical1");
 
+            transform.Rotate(Vector3.up, xInput * m_AngularVelocity * Time.deltaTime);
+
+            m_Target = transform.position + (transform.forward * yInput * MoveSpeed);
+            m_Target.y = m_GroundedDistance;
         }
 
         void Fire()
         {
             if (m_CanFire <= 0f)
             {
-                if (Input.GetKeyDown("Fire"))
+                if (Input.GetAxis("Fire1") > 0f)
                 {
                     m_CanFire = m_FireCooldown;
                 }

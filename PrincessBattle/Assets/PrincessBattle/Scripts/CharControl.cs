@@ -12,15 +12,24 @@ namespace PrincessBattle
         protected Transform m_CrownSpot;
         [SerializeField]
         protected MeshRenderer m_MeshRenderer;
+        [SerializeField]
+        protected Rigidbody m_Rigidbody;
 
         protected Material m_Material;
-        protected float m_GroundedDistance = .2f;
+        protected Color m_MaterialColor;
+        protected float m_GroundedDistance = .1f;
         protected bool m_Grounded;
         protected Transform m_Ground;
-        protected float m_MoveSpeed = 5f;
-        protected float m_MovementAdjustmentWhenCrowned = .9f;
+        protected float m_MoveSpeed = 10f;
+        protected float m_MovementAdjustmentWhenCrowned = .85f;
         protected bool m_Crowned;
         protected Vector3 m_Velocity = Vector3.zero;
+        protected float m_AngularVelocity = 90f;
+
+        protected Vector3 m_Target;
+
+        protected float m_FreezeCountdown = 2f;
+        protected float m_FreezeTimeout;
 
         public Transform CrownSpot
         {
@@ -47,30 +56,50 @@ namespace PrincessBattle
             get { return m_Ground; }
         }
 
+        public bool Crowned
+        {
+            get { return m_Crowned; }
+            set { m_Crowned = value; }
+        }
+
         virtual protected void Awake()
         {
             m_Material = m_MeshRenderer.material;
+            m_Target = transform.position;
+        }
+
+        virtual protected void Start()
+        {
+            m_MaterialColor = m_Material.color;
         }
 
         virtual protected void FixedUpdate()
         {
-            m_Velocity = Vector3.zero;
-
             VerifyGround();
-
-            Forces();
         }
 
         virtual protected void Update()
         {
-            transform.position += m_Velocity;
+            if (m_FreezeTimeout <= 0)
+            {
+                m_Material.color = m_MaterialColor;
+
+                transform.position = Vector3.MoveTowards(transform.position, m_Target, (MoveSpeed * Time.deltaTime));
+                transform.position += m_Velocity;
+            }
+            else
+            {
+                m_Material.color = Color.Lerp(m_MaterialColor, Color.red, Mathf.PingPong(Time.time, 1));
+
+                m_FreezeTimeout -= Time.deltaTime;
+            }
         }
 
         bool VerifyGround()
         {
             RaycastHit hit;
 
-            m_Grounded = Physics.Raycast(transform.position, Vector3.down, out hit, m_GroundedDistance, m_GroundLayer);
+            m_Grounded = Physics.Raycast(transform.position, Vector3.down, out hit, Mathf.Infinity, m_GroundLayer);
 
             if (m_Grounded)
             {
@@ -80,16 +109,20 @@ namespace PrincessBattle
             return m_Grounded;
         }
 
-        void Forces()
+        void OnCollisionEnter(Collision collision)
         {
-            // Gravity
-            if (!m_Grounded)
+            if (m_Crowned && m_FreezeTimeout <= 0)
             {
-                m_Velocity += Physics.gravity * Time.fixedDeltaTime;
-            }
-            else
-            {
+                CharControl charControl = collision.gameObject.GetComponent<CharControl>();
 
+                if (charControl != null)
+                {
+                    CrownControl.Instance.Owner = charControl;
+
+                    charControl.Crowned = true;
+
+                    m_FreezeTimeout = m_FreezeCountdown;
+                }
             }
         }
     }

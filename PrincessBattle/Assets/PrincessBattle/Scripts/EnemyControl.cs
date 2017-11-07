@@ -13,62 +13,75 @@ namespace PrincessBattle
         };
 
         [SerializeField]
-        float m_ViewRange = 10f;
+        float m_ViewRange = 100f;
 
-        PlayerControl m_Player;
         bool m_PlayerSeen;
 
-        Vector3 m_TargetPosition;
+        float m_RunningCountdown = 5f;
+        float m_RunningTimeout;
 
         override protected void Awake()
         {
             base.Awake();
 
             m_CharName = m_FirstNames[Random.Range(0, m_FirstNames.Length)] + " " + m_SurNames[Random.Range(0, m_SurNames.Length)];
-            m_Player = GameControl.Instance.Player;
             m_Material.color = m_Colors[Random.Range(0, m_Colors.Length)];
         }
 
         override protected void Update()
         {
-            base.Update();
+            Quaternion direction = Quaternion.LookRotation(m_Target - transform.position, Vector3.up);
+
+            transform.rotation = direction;
 
             if (!m_Crowned)
             {
-                if (m_PlayerSeen)
-                {
-
-                }
-                else
-                {
-                    VerifyForPlayer();
-                }
-
                 Move();
             }
             else
             {
                 Run();
             }
+
+            base.Update();
         }
 
         void Move()
         {
-
+            LookForTheCrown();
         }
 
         void Run()
         {
-
+            RunFromOthers();
         }
 
-        void VerifyForPlayer()
+        void LookForTheCrown()
         {
-            float distance = Vector3.Distance(m_Player.transform.position, transform.position);
+            float distance = Vector3.Distance(CrownControl.Instance.transform.position, transform.position);
 
             if (distance <= m_ViewRange)
             {
                 m_PlayerSeen = true;
+
+                m_Target = CrownControl.Instance.transform.position;
+                m_Target.y = m_GroundedDistance;
+            }
+        }
+
+        void RunFromOthers()
+        {
+            if (m_RunningTimeout <= 0)
+            {
+                float distance = (Random.value * 20f) + 10f;
+
+                m_Target = new Vector3(Random.insideUnitCircle.x * distance, m_GroundedDistance, Random.insideUnitCircle.y * distance);
+
+                m_RunningTimeout = m_RunningCountdown;
+            }
+            else
+            {
+                m_RunningTimeout -= Time.deltaTime;
             }
         }
     }

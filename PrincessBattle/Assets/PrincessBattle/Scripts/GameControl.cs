@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace PrincessBattle
 {
@@ -10,6 +11,13 @@ namespace PrincessBattle
         {
             get { return m_Instance; }
         }
+
+        [SerializeField]
+        GameObject m_Menu;
+        [SerializeField]
+        GameObject m_GameOver;
+
+        [Space]
 
         [SerializeField]
         int m_LevelRooms = 10;
@@ -25,14 +33,23 @@ namespace PrincessBattle
         [Space]
 
         [SerializeField]
+        Canvas m_Canvas;
+
+        [Space]
+
+        [SerializeField]
         GameObject m_PlayerPrefab;
         [SerializeField]
         GameObject m_EnemyPrefab;
         [SerializeField]
         GameObject m_CrownPrefab;
+        [SerializeField]
+        GameObject m_CountdownPrefab;
 
         [Space]
 
+        [SerializeField]
+        CameraControl m_CameraControl;
         [SerializeField]
         GameObject[] m_Blocks;
 
@@ -44,6 +61,10 @@ namespace PrincessBattle
 
         float m_SpawnInterval = 3f;
         float m_SpawnCooldown;
+        float m_StartCountdown;
+
+        bool m_GameInit;
+        bool m_GameStarted;
 
         public PlayerControl Player
         {
@@ -70,12 +91,28 @@ namespace PrincessBattle
 
         void Start()
         {
-            SetupLevel();
+            m_Menu.SetActive(true);
+            m_GameOver.SetActive(false);
         }
 
         void Update()
         {
-            SpawnEnemies();
+            if (m_GameStarted)
+            {
+                SpawnEnemies();
+            }
+            else
+            {
+                if (m_StartCountdown <= 0)
+                {
+                    m_GameStarted = true;
+                    m_Player.CanMove = true;
+
+                    CameraControl.Instance.m_Targets = new Transform[] { m_Player.transform };
+                }
+
+                m_StartCountdown -= Time.deltaTime;
+            }
         }
 
         void LateUpdate()
@@ -84,6 +121,43 @@ namespace PrincessBattle
         }
 
         // Instance methods:
+
+        public void New()
+        {
+            SetupLevel();
+
+            m_GameInit = true;
+            m_GameStarted = false;
+            m_StartCountdown = m_SpawnInterval;
+
+            m_Menu.SetActive(false);
+            m_GameOver.SetActive(false);
+
+            DisplayCountdown();
+        }
+
+        public void Quit()
+        {
+            Application.Quit();
+        }
+
+        void DisplayCountdown()
+        {
+            if (m_StartCountdown > 0)
+            {
+                GameObject obj = Instantiate(m_CountdownPrefab, m_Canvas.transform);
+
+                Text countdown = obj.GetComponent<Text>();
+
+                string count = Mathf.Ceil(m_StartCountdown) + "";
+
+                Debug.Log(count);
+
+                countdown.text = count;
+
+                Invoke("DisplayCountdown", 1f);
+            }
+        }
 
         void SetupLevel()
         {
@@ -140,13 +214,13 @@ namespace PrincessBattle
 
             // Player:
 
-            GameObject player = Instantiate(m_PlayerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+            GameObject player = Instantiate(m_PlayerPrefab, new Vector3(0, 0.1f, 0), Quaternion.identity);
 
             m_Player = player.GetComponent<PlayerControl>();
 
             // Crown:
 
-            GameObject crown = Instantiate(m_CrownPrefab);
+            GameObject crown = Instantiate(m_CrownPrefab, Vector3.zero, Quaternion.identity);
 
             m_Crown = crown.GetComponent<CrownControl>();
 
@@ -167,30 +241,35 @@ namespace PrincessBattle
                 if (m_Enemies[i] == null)
                 {
                     Vector3 position = m_Player.transform.position;
-                    Quaternion direction = Quaternion.LookRotation(position);
 
-                    float distance = 30f;
-                    bool valid;
+                    float distance = 50f;
+                    float minDistance = 20f;
+                    bool valid = false;
                     int maxEntropy = 300;
                     int cycle = 0;
 
-                    position.y = 1f;
+                    position.y = 0.1f;
 
                     do
                     {
                         if (cycle >= maxEntropy) break;
-
-                        RaycastHit hit;
 
                         Vector2 point = Random.insideUnitCircle;
 
                         position.x += point.x * distance;
                         position.z += point.y * distance;
 
-                        valid = Physics.Raycast(position, Vector3.down, out hit, Mathf.Infinity, m_GroundLayer);
+                        if (Vector3.Distance(m_Player.transform.position, position) >= minDistance)
+                        {
+                            RaycastHit hit;
+
+                            valid = Physics.Raycast(position, Vector3.down, out hit, Mathf.Infinity, m_GroundLayer);
+                        }
 
                         cycle++;
                     } while (!valid);
+
+                    Quaternion direction = Quaternion.LookRotation(m_Player.transform.position - position, Vector3.up);
 
                     GameObject enemy = Instantiate(m_EnemyPrefab, position, direction);
 

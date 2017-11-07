@@ -1,22 +1,37 @@
 ﻿using UnityEngine;
 
-public class CameraControl : MonoBehaviour
+namespace PrincessBattle {
+    public class CameraControl : MonoBehaviour
 {
-    public float m_DampTime = 0.2f;                 
-    public float m_ScreenEdgeBuffer = 4f;           
-    public float m_MinSize = 6.5f;                  
-    [HideInInspector] public Transform[] m_Targets; 
+    static CameraControl m_Instance;
+
+    public float m_DampTime = 0.2f;
+    public float m_ScreenEdgeBuffer = 4f;
+    public float m_MinSize = 6.5f;
+    [HideInInspector] public Transform[] m_Targets;
 
 
-    private Camera m_Camera;                        
-    private float m_ZoomSpeed;                      
-    private Vector3 m_MoveVelocity;                 
-    private Vector3 m_DesiredPosition;              
+    private Camera m_Camera;
+    private float m_ZoomSpeed;
+    private Vector3 m_MoveVelocity;
+    private Vector3 m_DesiredPosition;
 
+
+    public static CameraControl Instance
+    {
+        get { return m_Instance; }
+    }
 
     private void Awake()
     {
+        if (m_Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         m_Camera = GetComponentInChildren<Camera>();
+        m_Instance = this;
     }
 
 
@@ -80,11 +95,11 @@ public class CameraControl : MonoBehaviour
 
             Vector3 desiredPosToTarget = targetLocalPos - desiredLocalPos;
 
-            size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.y));
+            size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.y));
 
-            size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.x) / m_Camera.aspect);
+            size = Mathf.Max(size, Mathf.Abs(desiredPosToTarget.x) / m_Camera.aspect);
         }
-        
+
         size += m_ScreenEdgeBuffer;
 
         size = Mathf.Max(size, m_MinSize);
@@ -101,4 +116,5 @@ public class CameraControl : MonoBehaviour
 
         m_Camera.orthographicSize = FindRequiredSize();
     }
+}
 }
