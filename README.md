@@ -10,8 +10,10 @@ Princess Battle é um jogo spin-off do jogo Princess Escape. Esse jogo casual te
 
 # Imagens do jogo:
 
-Inserir imagens do jogo.
+https://drive.google.com/open?id=1L4qY1H7SJCUXRdUcjYwn6WStb7P2EIP4
+
+https://drive.google.com/open?id=1QkdA_HGGRbDkpMHZ5A-YC48oi5Wz0xuM
 
 # Link no Itch IO para o download dos executáveis do jogo:
 
-Colocar o link no Itch IO.
+https://thepipecat.itch.io/princess-battle 
