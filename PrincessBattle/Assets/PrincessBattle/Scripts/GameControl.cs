@@ -55,7 +55,7 @@ namespace PrincessBattle
 
         CrownControl m_Crown;
         CharControl m_CrownOwner;
-
+        GameObject m_Level;
         PlayerControl m_Player;
         EnemyControl[] m_Enemies;
 
@@ -97,21 +97,24 @@ namespace PrincessBattle
 
         void Update()
         {
-            if (m_GameStarted)
+            if (m_GameInit)
             {
-                SpawnEnemies();
-            }
-            else
-            {
-                if (m_StartCountdown <= 0)
+                if (m_GameStarted)
                 {
-                    m_GameStarted = true;
-                    m_Player.CanMove = true;
-
-                    CameraControl.Instance.m_Targets = new Transform[] { m_Player.transform };
+                    SpawnEnemies();
                 }
+                else
+                {
+                    if (m_StartCountdown <= 0)
+                    {
+                        m_GameStarted = true;
+                        m_Player.CanMove = true;
 
-                m_StartCountdown -= Time.deltaTime;
+                        CameraControl.Instance.m_Targets = new Transform[] { m_Player.transform };
+                    }
+
+                    m_StartCountdown -= Time.deltaTime;
+                }
             }
         }
 
@@ -124,6 +127,11 @@ namespace PrincessBattle
 
         public void New()
         {
+            if (m_Level != null)
+            {
+                Destroy(m_Level);
+            }
+
             SetupLevel();
 
             m_GameInit = true;
@@ -161,9 +169,13 @@ namespace PrincessBattle
 
         void SetupLevel()
         {
+            m_Level = new GameObject("Level");
+
             // Blocks:
             // -- Initial
             GameObject blockIni = Instantiate(m_Blocks[0], Vector3.zero, Quaternion.identity);
+
+            blockIni.transform.parent = m_Level.transform;
 
             // -- Intermediares
             GameObject lastBlock = null;
@@ -204,6 +216,8 @@ namespace PrincessBattle
                     block.transform.localScale = new Vector3(1, 1, Random.value > 0.5f ? 1 : -1);
                 }
 
+                block.transform.parent = m_Level.transform;
+
                 lastBlock = block;
             }
 
@@ -212,11 +226,15 @@ namespace PrincessBattle
 
             blockEnd.transform.position = lastBlock.transform.position + new Vector3(blockDistance, 0, 0);
 
+            blockEnd.transform.parent = m_Level.transform;
+
             // Player:
 
             GameObject player = Instantiate(m_PlayerPrefab, new Vector3(0, 0.1f, 0), Quaternion.identity);
 
             m_Player = player.GetComponent<PlayerControl>();
+
+            m_Player.transform.parent = m_Level.transform;
 
             // Crown:
 
@@ -272,6 +290,8 @@ namespace PrincessBattle
                     Quaternion direction = Quaternion.LookRotation(m_Player.transform.position - position, Vector3.up);
 
                     GameObject enemy = Instantiate(m_EnemyPrefab, position, direction);
+
+                    enemy.transform.parent = m_Level.transform;
 
                     m_Enemies[i] = enemy.GetComponent<EnemyControl>();
 

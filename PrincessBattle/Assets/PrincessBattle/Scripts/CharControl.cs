@@ -21,7 +21,7 @@ namespace PrincessBattle
         protected bool m_Grounded;
         protected Transform m_Ground;
         protected float m_MoveSpeed = 10f;
-        protected float m_MovementAdjustmentWhenCrowned = .85f;
+        protected float m_MovementAdjustmentWhenCrowned = 1.1f;
         protected bool m_Crowned;
         protected Vector3 m_Velocity = Vector3.zero;
         protected float m_AngularVelocity = 90f;
@@ -30,6 +30,11 @@ namespace PrincessBattle
 
         protected float m_FreezeCountdown = 2f;
         protected float m_FreezeTimeout;
+
+        public string CharName
+        {
+            get { return m_CharName; }
+        }
 
         public Transform CrownSpot
         {
@@ -117,6 +122,8 @@ namespace PrincessBattle
 
                 if (charControl != null)
                 {
+                    Debug.Log("Collided with " + charControl.m_CharName);
+
                     CrownControl.Instance.Owner = charControl;
 
                     charControl.Crowned = true;
