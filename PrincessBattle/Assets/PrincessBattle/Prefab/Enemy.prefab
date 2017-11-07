@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 4838992469602376}
   - component: {fileID: 54686224241472810}
   - component: {fileID: 65903552736119784}
+  - component: {fileID: 135670502728860872}
   - component: {fileID: 114145279566811728}
   m_Layer: 0
   m_Name: Enemy
@@ -95,7 +96,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1828923668324690}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -3.59, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4274144888494938}
@@ -205,3 +206,15 @@ MonoBehaviour:
   m_MeshRenderer: {fileID: 23436754133831858}
   m_Rigidbody: {fileID: 54686224241472810}
   m_ViewRange: 100
+--- !u!135 &135670502728860872
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1828923668324690}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 2.29, z: 1.4}

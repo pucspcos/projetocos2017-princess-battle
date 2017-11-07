@@ -22,6 +22,8 @@ namespace PrincessBattle
 
                 gameObject.transform.position = m_Owner.CrownSpot.position;
                 gameObject.transform.parent = m_Owner.CrownSpot;
+
+                m_Owner.Crowned = true;
             }
         }
 

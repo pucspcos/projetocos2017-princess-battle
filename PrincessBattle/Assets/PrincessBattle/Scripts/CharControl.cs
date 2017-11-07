@@ -31,6 +31,9 @@ namespace PrincessBattle
         protected float m_FreezeCountdown = 2f;
         protected float m_FreezeTimeout;
 
+        protected float m_InvencibleCountdown = 3f;
+        protected float m_InvencibleTimeout;
+
         public string CharName
         {
             get { return m_CharName; }
@@ -114,23 +117,31 @@ namespace PrincessBattle
             return m_Grounded;
         }
 
-        void OnCollisionEnter(Collision collision)
+        void VerifyCrownTheft(GameObject obj)
         {
             if (m_Crowned && m_FreezeTimeout <= 0)
             {
-                CharControl charControl = collision.gameObject.GetComponent<CharControl>();
+                Debug.Log(gameObject.name + " collided with " + obj.name);
+
+                CharControl charControl = obj.GetComponent<CharControl>();
 
                 if (charControl != null)
                 {
-                    Debug.Log("Collided with " + charControl.m_CharName);
-
                     CrownControl.Instance.Owner = charControl;
-
-                    charControl.Crowned = true;
 
                     m_FreezeTimeout = m_FreezeCountdown;
                 }
             }
+        }
+
+        void OnCollisionEnter(Collision collision)
+        {
+            VerifyCrownTheft(collision.gameObject);
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            VerifyCrownTheft(other.gameObject);
         }
     }
 }

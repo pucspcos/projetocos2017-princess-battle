@@ -157,7 +157,7 @@ namespace PrincessBattle
 
                 Text countdown = obj.GetComponent<Text>();
 
-                string count = Mathf.Ceil(m_StartCountdown) + "";
+                string count = Mathf.RoundToInt(m_StartCountdown) + "";
 
                 Debug.Log(count);
 
