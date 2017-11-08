@@ -16,6 +16,8 @@ namespace PrincessBattle
         GameObject m_Menu;
         [SerializeField]
         GameObject m_GameOver;
+        [SerializeField]
+        InterfaceControl m_Interface;
 
         [Space]
 
@@ -151,19 +153,21 @@ namespace PrincessBattle
 
         void DisplayCountdown()
         {
+            GameObject obj = Instantiate(m_CountdownPrefab, m_Canvas.transform);
+
+            Text countdown = obj.GetComponent<Text>();
+
             if (m_StartCountdown > 0)
             {
-                GameObject obj = Instantiate(m_CountdownPrefab, m_Canvas.transform);
-
-                Text countdown = obj.GetComponent<Text>();
-
                 string count = Mathf.RoundToInt(m_StartCountdown) + "";
-
-                Debug.Log(count);
 
                 countdown.text = count;
 
                 Invoke("DisplayCountdown", 1f);
+            }
+            else
+            {
+                countdown.text = "Go!";
             }
         }
 
