@@ -11,13 +11,13 @@ Divirta-se com o fantástico game Princess Battle, onde vc, jogador, precisa pro
 # Imagens do jogo:
 
 ![Menu do jogo]
-(https://github.com/pucspcos/projetocos2017-princess-battle/blob/master/docs/images/screenshot1.jpg)
+(https://github.com/pucspcos/projetocos2017-princess-battle/blob/master/docs/images/screenshot1.jpg?raw=true)
 
 ![Run Lola!]
-(https://github.com/pucspcos/projetocos2017-princess-battle/blob/master/docs/images/screenshot2.jpg)
+(https://github.com/pucspcos/projetocos2017-princess-battle/blob/master/docs/images/screenshot2.jpg?raw=true)
 
 ![Alguém roubou minha coroa!]
-(https://github.com/pucspcos/projetocos2017-princess-battle/blob/master/docs/images/screenshot3.jpg)
+(https://github.com/pucspcos/projetocos2017-princess-battle/blob/master/docs/images/screenshot3.jpg?raw=true)
 
 https://drive.google.com/open?id=1L4qY1H7SJCUXRdUcjYwn6WStb7P2EIP4
 
